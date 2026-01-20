@@ -1,7 +1,10 @@
 import Fastify from 'fastify'
 import type { FastifyInstance, FastifyServerOptions, FastifyError } from 'fastify'
+import { config } from 'dotenv'
 
 import routes from './routes/index.js'
+
+config()
 
 // Кастомный тип ошибки
 interface AppError extends FastifyError {
