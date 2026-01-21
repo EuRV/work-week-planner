@@ -1,4 +1,5 @@
 import Fastify from 'fastify'
+import cors from '@fastify/cors'
 import type { FastifyInstance, FastifyServerOptions, FastifyError } from 'fastify'
 import { config } from 'dotenv'
 
@@ -42,6 +43,12 @@ const buildApp = async (options: FastifyServerOptions = {}): Promise<FastifyInst
 
   // Создаем экземпляр
   const fastify = Fastify(fastifyOptions)
+
+  await fastify.register(cors, {
+    origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+    methods: ['GET', 'POST', 'OPTIONS'],
+    credentials: true
+  })
 
   // Регистрируем роуты
   await fastify.register(routes, { prefix: '/api' })
