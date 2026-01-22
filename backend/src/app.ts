@@ -1,11 +1,8 @@
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
 import type { FastifyInstance, FastifyServerOptions, FastifyError } from 'fastify'
-import { config } from 'dotenv'
 
-import routes from './routes/index.js'
-
-config()
+import { calendarRoutes } from './routes/calendar/index.js';
 
 // Кастомный тип ошибки
 interface AppError extends FastifyError {
@@ -44,14 +41,17 @@ const buildApp = async (options: FastifyServerOptions = {}): Promise<FastifyInst
   // Создаем экземпляр
   const fastify = Fastify(fastifyOptions)
 
+  // Регистрируем CORS
   await fastify.register(cors, {
     origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
-    methods: ['GET', 'POST', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
     credentials: true
   })
 
   // Регистрируем роуты
-  await fastify.register(routes, { prefix: '/api' })
+  await fastify.register(async (app) => {
+    app.register(calendarRoutes);
+  }, { prefix: '/api/calendar' })
 
   // Обработка ошибок
   fastify.setErrorHandler((error: AppError, request, reply) => {
