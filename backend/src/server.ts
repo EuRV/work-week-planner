@@ -1,4 +1,7 @@
 import buildApp from './app.js'
+import { config } from 'dotenv'
+
+config()
 
 // Запуск сервера
 const start = async () => {
